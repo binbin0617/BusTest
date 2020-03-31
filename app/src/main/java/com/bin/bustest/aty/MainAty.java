@@ -1,10 +1,11 @@
-package com.bin.bustest;
+package com.bin.bustest.aty;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 
+import com.bin.bustest.R;
 import com.bin.bustest.fgt.FirstFragment;
 import com.bin.bustest.fgt.SecondFragment;
 import com.next.easynavigation.view.EasyNavigationBar;
@@ -12,7 +13,7 @@ import com.next.easynavigation.view.EasyNavigationBar;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainAty extends AppCompatActivity {
     private String[] tabText = {"首页", "发现", "消息", "我的"};
     //未选中icon
     private int[] normalIcon = {R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher};
