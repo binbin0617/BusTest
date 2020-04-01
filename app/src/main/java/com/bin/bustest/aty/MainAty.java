@@ -49,11 +49,13 @@ public class MainAty extends AppCompatActivity {
         mLocationClient = new LocationClient(getApplicationContext());
         //声明LocationClient类
         mLocationClient.registerLocationListener(myListener);
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{
                         Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
                 }, 00000000);
             }
         }
@@ -140,7 +142,9 @@ public class MainAty extends AppCompatActivity {
             //获取经度信息
             double longitude = location.getLongitude();
 
-            Log.e(TAG, "-->" + latitude + longitude);
+            int errorCode = location.getLocType();
+
+            Log.e(TAG, "-->errorCode   " +errorCode+"    latitude"+ latitude +"    longitude"+ longitude);
             LocationBean locationBean = new LocationBean();
             locationBean.setLatitude(latitude);
             locationBean.setLongitude(longitude);

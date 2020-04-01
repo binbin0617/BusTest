@@ -5,36 +5,39 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.baidu.location.BDAbstractLocationListener;
-import com.baidu.location.BDLocation;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.busline.BusLineResult;
 import com.baidu.mapapi.search.busline.BusLineSearch;
-import com.baidu.mapapi.search.busline.BusLineSearchOption;
 import com.baidu.mapapi.search.busline.OnGetBusLineSearchResultListener;
 import com.baidu.mapapi.search.core.PoiInfo;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.poi.OnGetPoiSearchResultListener;
-import com.baidu.mapapi.search.poi.PoiCitySearchOption;
 import com.baidu.mapapi.search.poi.PoiDetailResult;
 import com.baidu.mapapi.search.poi.PoiDetailSearchResult;
 import com.baidu.mapapi.search.poi.PoiIndoorResult;
 import com.baidu.mapapi.search.poi.PoiNearbySearchOption;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
-import com.baidu.mapapi.search.poi.PoiSortType;
 import com.bin.bustest.R;
-import com.bin.bustest.aty.MainAty;
+import com.bin.bustest.bean.BusBean;
+import com.bin.bustest.bean.HomeBean;
 import com.bin.bustest.bean.LocationBean;
+import com.bumptech.glide.Glide;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SecondFragment extends Fragment implements OnGetBusLineSearchResultListener {
@@ -45,11 +48,19 @@ public class SecondFragment extends Fragment implements OnGetBusLineSearchResult
 
     private BusLineSearch mBusLineSearch;
 
+    private List<BusBean> mList;
+
+    private RecyclerView rv;
+
+    private BusActionAdapter adapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fgt_first, container, false);
+        rv = view.findViewById(R.id.rv);
         EventBus.getDefault().register(this);
+        mList = new ArrayList<>();
         return view;
     }
 
@@ -63,28 +74,19 @@ public class SecondFragment extends Fragment implements OnGetBusLineSearchResult
 
         mPoiSearch = PoiSearch.newInstance();
 
-//        mBusLineSearch = BusLineSearch.newInstance();
-//
-//        mBusLineSearch.setOnGetBusLineSearchResultListener(this);
-
         mPoiSearch.setOnGetPoiSearchResultListener(onGetPoiSearchResultListener);
 
-        mPoiSearch.searchInCity((new PoiCitySearchOption())
-                .city("天津")
-                .keyword("ktv")
-                .pageNum(10));
-//        PoiNearbySearchOption option = new PoiNearbySearchOption();
-//        option.keyword("华苑");
-//        option.sortType(PoiSortType.distance_from_near_to_far);
-//        option.location(new LatLng(locationBean.getLatitude(), locationBean.getLongitude()));
-////        if (radius != 0) {
-////            option.radius(radius);
-////        } else {
-//        option.radius(1000);
-////        }
-//
-//        option.pageCapacity(20);
-//        mPoiSearch.searchNearby(option);
+//        mPoiSearch.searchInCity(new PoiCitySearchOption()
+//                .city("天津") //必填字段
+//                .keyword("公交") //必填字段
+//                .pageNum(10));
+
+        mPoiSearch.searchNearby(new PoiNearbySearchOption()
+                .location(new LatLng(locationBean.getLatitude(), locationBean.getLongitude()))
+                .radius(1000)
+                .keyword("公交")
+                .pageNum(1));
+
     }
 
 
@@ -96,17 +98,25 @@ public class SecondFragment extends Fragment implements OnGetBusLineSearchResult
                 Toast.makeText(getContext(), "OnGetPoiSearchResultListener抱歉，未找到结果", Toast.LENGTH_LONG).show();
                 return;
             }
+            Log.e(TAG, poiResult.getAllPoi().size() + "-->");
             // 遍历所有poi，找到类型为公交线路的poi
             for (PoiInfo poi : poiResult.getAllPoi()) {
-                if (poi.type == PoiInfo.POITYPE.BUS_LINE
-                        || poi.type == PoiInfo.POITYPE.SUBWAY_LINE) {
-                    //如下代码为发起检索代码，定义监听者和设置监听器的方法与POI中的类似
-                    mBusLineSearch.searchBusLine((new BusLineSearchOption()
-                            //我这里的城市写死了，和我要查的是一样的
-                            .city("天津")
-                            .uid(poi.uid)));
-                }
+//                Log.e(TAG,poi.getPoiDetailInfo().getTag()+"-->");
+                BusBean busBean = new BusBean();
+                busBean.setName(poi.getName());
+                busBean.setBusId(poi.getAddress());
+                mList.add(busBean);
+                Log.e(TAG, poi.getAddress() + "getAddress-->");
+                Log.e(TAG, poi.getArea() + "getArea-->");
+                Log.e(TAG, poi.getCity() + "getCity-->");
+                Log.e(TAG, poi.getDirection() + "getDirection-->");
+                Log.e(TAG, poi.getName() + "getName-->");
+                Log.e(TAG, poi.getDetail() + "getDetail-->");
             }
+
+            adapter = new BusActionAdapter(R.layout.item_bus, mList);
+            rv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+            rv.setAdapter(adapter);
         }
 
         @Override
@@ -148,6 +158,21 @@ public class SecondFragment extends Fragment implements OnGetBusLineSearchResult
         super.onDestroy();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
+        }
+    }
+
+
+    public class BusActionAdapter extends BaseQuickAdapter<BusBean, BaseViewHolder> {
+        public BusActionAdapter(int layoutResId, List data) {
+            super(layoutResId, data);
+        }
+
+        @Override
+        protected void convert(BaseViewHolder helper, BusBean item) {
+            helper.setText(R.id.tv_name, item.getName());
+//            helper.setImageResource(R.id.icon, item.getImageResource());
+            // 加载网络图片
+//            Glide.with(getContext()).load(item.getImgId()).into((ImageView) helper.getView(R.id.iv));
         }
     }
 
