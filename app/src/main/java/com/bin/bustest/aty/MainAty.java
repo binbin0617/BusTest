@@ -15,9 +15,11 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.bin.bustest.R;
+import com.bin.bustest.base.BaseAty;
 import com.bin.bustest.bean.LocationBean;
-import com.bin.bustest.fgt.FirstFragment;
-import com.bin.bustest.fgt.SecondFragment;
+import com.bin.bustest.fgt.ThirdFgt;
+import com.bin.bustest.fgt.FirstFgt;
+import com.bin.bustest.fgt.Secondfgt;
 import com.next.easynavigation.view.EasyNavigationBar;
 
 import org.greenrobot.eventbus.EventBus;
@@ -25,7 +27,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainAty extends AppCompatActivity {
+public class MainAty extends BaseAty {
 
     private String TAG = MainAty.class.getSimpleName();
     private String[] tabText = {"首页", "发现", "消息", "我的"};
@@ -66,10 +68,10 @@ public class MainAty extends AppCompatActivity {
     public void initView() {
 
         navigationBar = findViewById(R.id.navigationBar);
-        fragments.add(new FirstFragment());
-        fragments.add(new SecondFragment());
-        fragments.add(new FirstFragment());
-        fragments.add(new SecondFragment());
+        fragments.add(new FirstFgt());
+        fragments.add(new Secondfgt());
+        fragments.add(new ThirdFgt());
+        fragments.add(new FirstFgt());
 
         navigationBar.titleItems(tabText)
                 .normalIconItems(normalIcon)
@@ -127,6 +129,12 @@ public class MainAty extends AppCompatActivity {
         mLocationClient.start();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mLocationClient.stop();
+    }
+
     /**
      * 实现定位回调
      */
@@ -144,7 +152,7 @@ public class MainAty extends AppCompatActivity {
 
             int errorCode = location.getLocType();
 
-            Log.e(TAG, "-->errorCode   " +errorCode+"    latitude"+ latitude +"    longitude"+ longitude);
+            Log.e(TAG, "-->errorCode   " + errorCode + "    latitude" + latitude + "    longitude" + longitude);
             LocationBean locationBean = new LocationBean();
             locationBean.setLatitude(latitude);
             locationBean.setLongitude(longitude);

@@ -6,10 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bin.bustest.base.BaseFgt;
 import com.bin.bustest.bean.HomeBean;
 import com.bin.bustest.R;
 import com.bin.bustest.adapter.ImageAdapter;
@@ -22,7 +22,7 @@ import com.youth.banner.indicator.CircleIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirstFragment extends Fragment {
+public class ThirdFgt extends BaseFgt {
 
     private Banner banner;
 
@@ -37,7 +37,7 @@ public class FirstFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fgt_first, container, false);
+        View view = inflater.inflate(R.layout.fgt_third, container, false);
         initView(view);
         return view;
     }

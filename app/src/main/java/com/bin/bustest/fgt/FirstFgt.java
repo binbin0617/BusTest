@@ -1,14 +1,14 @@
 package com.bin.bustest.fgt;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,11 +26,12 @@ import com.baidu.mapapi.search.poi.PoiNearbySearchOption;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
 import com.bin.bustest.R;
+import com.bin.bustest.aty.BusDetailsAty;
+import com.bin.bustest.base.BaseFgt;
 import com.bin.bustest.bean.BusBean;
-import com.bin.bustest.bean.HomeBean;
 import com.bin.bustest.bean.LocationBean;
-import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
@@ -40,9 +41,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SecondFragment extends Fragment implements OnGetBusLineSearchResultListener {
+public class FirstFgt extends BaseFgt implements OnGetBusLineSearchResultListener {
 
-    private String TAG = SecondFragment.class.getSimpleName();
+    private String TAG = FirstFgt.class.getSimpleName();
 
     private PoiSearch mPoiSearch;
 
@@ -82,7 +83,8 @@ public class SecondFragment extends Fragment implements OnGetBusLineSearchResult
 //                .pageNum(10));
 
         mPoiSearch.searchNearby(new PoiNearbySearchOption()
-                .location(new LatLng(locationBean.getLatitude(), locationBean.getLongitude()))
+                .location(new LatLng(39.094924, 117.13299))
+//                .location(new LatLng(locationBean.getLatitude(), locationBean.getLongitude()))
                 .radius(1000)
                 .keyword("公交")
                 .pageNum(1));
@@ -100,6 +102,9 @@ public class SecondFragment extends Fragment implements OnGetBusLineSearchResult
             }
             Log.e(TAG, poiResult.getAllPoi().size() + "-->");
             // 遍历所有poi，找到类型为公交线路的poi
+            if (mList.size() != 0) {
+                mList.clear();
+            }
             for (PoiInfo poi : poiResult.getAllPoi()) {
 //                Log.e(TAG,poi.getPoiDetailInfo().getTag()+"-->");
                 BusBean busBean = new BusBean();
@@ -112,11 +117,8 @@ public class SecondFragment extends Fragment implements OnGetBusLineSearchResult
                 Log.e(TAG, poi.getDirection() + "getDirection-->");
                 Log.e(TAG, poi.getName() + "getName-->");
                 Log.e(TAG, poi.getDetail() + "getDetail-->");
+                initAdapter();
             }
-
-            adapter = new BusActionAdapter(R.layout.item_bus, mList);
-            rv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-            rv.setAdapter(adapter);
         }
 
         @Override
@@ -134,6 +136,21 @@ public class SecondFragment extends Fragment implements OnGetBusLineSearchResult
 
         }
     };
+
+    private void initAdapter() {
+        adapter = new BusActionAdapter(R.layout.item_bus, mList);
+        rv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        rv.setAdapter(adapter);
+        adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                Intent intent = new Intent(getContext(), BusDetailsAty.class);
+                intent.putExtra("name", mList.get(position).getName());
+                intent.putExtra("busid", mList.get(position).getBusId());
+                startActivity(intent);
+            }
+        });
+    }
 
     @Override
     public void onGetBusLineResult(BusLineResult busLineResult) {
@@ -156,6 +173,7 @@ public class SecondFragment extends Fragment implements OnGetBusLineSearchResult
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mPoiSearch.destroy();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
@@ -170,6 +188,7 @@ public class SecondFragment extends Fragment implements OnGetBusLineSearchResult
         @Override
         protected void convert(BaseViewHolder helper, BusBean item) {
             helper.setText(R.id.tv_name, item.getName());
+            helper.setText(R.id.tv_bus, item.getBusId());
 //            helper.setImageResource(R.id.icon, item.getImageResource());
             // 加载网络图片
 //            Glide.with(getContext()).load(item.getImgId()).into((ImageView) helper.getView(R.id.iv));

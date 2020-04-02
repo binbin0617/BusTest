@@ -47,6 +47,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".aty.SearchAty"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".aty.BusDetailsAty"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <!-- 开发者申请的key -->
         <meta-data
