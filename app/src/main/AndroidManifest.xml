@@ -53,6 +53,14 @@
         <activity
             android:name=".aty.BusDetailsAty"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".aty.MapAty" />
+        <activity
+            android:name=".aty.BusMapAty"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".aty.MapSearchAty"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity android:name=".aty.SearchPointAty"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <!-- 开发者申请的key -->
         <meta-data

@@ -1,5 +1,6 @@
 package com.bin.bustest.base;
 
+import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
@@ -15,5 +16,9 @@ public class BaseAty extends AppCompatActivity {
             // 长toast
             Toast.makeText(this, toast, Toast.LENGTH_LONG).show();
         }
+    }
+
+    public void finish(View view) {
+        this.finish();
     }
 }

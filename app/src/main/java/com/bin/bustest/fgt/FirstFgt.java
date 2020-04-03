@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,7 @@ import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
 import com.bin.bustest.R;
 import com.bin.bustest.aty.BusDetailsAty;
+import com.bin.bustest.aty.MapAty;
 import com.bin.bustest.base.BaseFgt;
 import com.bin.bustest.bean.BusBean;
 import com.bin.bustest.bean.LocationBean;
@@ -55,11 +57,16 @@ public class FirstFgt extends BaseFgt implements OnGetBusLineSearchResultListene
 
     private BusActionAdapter adapter;
 
+    private ImageView iv_search;
+
+    private LocationBean mLocationBean;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fgt_first, container, false);
         rv = view.findViewById(R.id.rv);
+        iv_search = view.findViewById(R.id.iv_search);
         EventBus.getDefault().register(this);
         mList = new ArrayList<>();
         return view;
@@ -67,24 +74,29 @@ public class FirstFgt extends BaseFgt implements OnGetBusLineSearchResultListene
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void Event(LocationBean locationBean) {
-        Log.e(TAG, "-->" + locationBean.getLatitude() + "aaaaaaa");
+//        Log.e(TAG, "-->" + locationBean.getLatitude() + "aaaaaaa");
+        mLocationBean = locationBean;
         initView(locationBean);
     }
 
     private void initView(LocationBean locationBean) {
 
+        iv_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), MapAty.class);
+                intent.putExtra("mLocationBean", mLocationBean);
+                startActivity(intent);
+            }
+        });
+
         mPoiSearch = PoiSearch.newInstance();
 
         mPoiSearch.setOnGetPoiSearchResultListener(onGetPoiSearchResultListener);
 
-//        mPoiSearch.searchInCity(new PoiCitySearchOption()
-//                .city("天津") //必填字段
-//                .keyword("公交") //必填字段
-//                .pageNum(10));
 
         mPoiSearch.searchNearby(new PoiNearbySearchOption()
                 .location(new LatLng(39.094924, 117.13299))
-//                .location(new LatLng(locationBean.getLatitude(), locationBean.getLongitude()))
                 .radius(1000)
                 .keyword("公交")
                 .pageNum(1));
@@ -100,7 +112,7 @@ public class FirstFgt extends BaseFgt implements OnGetBusLineSearchResultListene
                 Toast.makeText(getContext(), "OnGetPoiSearchResultListener抱歉，未找到结果", Toast.LENGTH_LONG).show();
                 return;
             }
-            Log.e(TAG, poiResult.getAllPoi().size() + "-->");
+//            Log.e(TAG, poiResult.getAllPoi().size() + "-->");
             // 遍历所有poi，找到类型为公交线路的poi
             if (mList.size() != 0) {
                 mList.clear();
@@ -111,12 +123,12 @@ public class FirstFgt extends BaseFgt implements OnGetBusLineSearchResultListene
                 busBean.setName(poi.getName());
                 busBean.setBusId(poi.getAddress());
                 mList.add(busBean);
-                Log.e(TAG, poi.getAddress() + "getAddress-->");
-                Log.e(TAG, poi.getArea() + "getArea-->");
-                Log.e(TAG, poi.getCity() + "getCity-->");
-                Log.e(TAG, poi.getDirection() + "getDirection-->");
-                Log.e(TAG, poi.getName() + "getName-->");
-                Log.e(TAG, poi.getDetail() + "getDetail-->");
+//                Log.e(TAG, poi.getAddress() + "getAddress-->");
+//                Log.e(TAG, poi.getArea() + "getArea-->");
+//                Log.e(TAG, poi.getCity() + "getCity-->");
+//                Log.e(TAG, poi.getDirection() + "getDirection-->");
+//                Log.e(TAG, poi.getName() + "getName-->");
+//                Log.e(TAG, poi.getDetail() + "getDetail-->");
                 initAdapter();
             }
         }
@@ -160,14 +172,14 @@ public class FirstFgt extends BaseFgt implements OnGetBusLineSearchResultListene
         }
         Toast.makeText(getContext(), busLineResult.getBusLineName(),
                 Toast.LENGTH_SHORT).show();
-        Log.e("MainActivity-->", busLineResult.toString());
+//        Log.e("MainActivity-->", busLineResult.toString());
         List<BusLineResult.BusStation> steps = busLineResult.getStations();
         StringBuffer sb = new StringBuffer();
         for (BusLineResult.BusStation b : steps) {
             sb.append("-->");
             sb.append(b.getTitle());
         }
-        Log.e("MainActivity-->", sb.toString());
+//        Log.e("MainActivity-->", sb.toString());
     }
 
     @Override

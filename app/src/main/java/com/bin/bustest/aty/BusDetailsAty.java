@@ -1,9 +1,11 @@
 package com.bin.bustest.aty;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,6 +14,7 @@ import com.bin.bustest.R;
 import com.bin.bustest.base.BaseAty;
 import com.bin.bustest.util.HisUtil;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 
 import java.util.ArrayList;
@@ -68,6 +71,14 @@ public class BusDetailsAty extends BaseAty {
         busRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 //        busDetailsAdapter.setEmptyView(view);
         busRv.setAdapter(busDetailsAdapter);
+        busDetailsAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                Intent intent = new Intent(BusDetailsAty.this, BusMapAty.class);
+                intent.putExtra("name", mList.get(position));
+                startActivity(intent);
+            }
+        });
     }
 
     public class BusDetailsAdapter extends BaseQuickAdapter<String, BaseViewHolder> {

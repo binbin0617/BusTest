@@ -21,6 +21,7 @@ import com.baidu.mapapi.search.sug.OnGetSuggestionResultListener;
 import com.baidu.mapapi.search.sug.SuggestionResult;
 import com.baidu.mapapi.search.sug.SuggestionSearch;
 import com.baidu.mapapi.search.sug.SuggestionSearchOption;
+import com.bin.bustest.BaseApplication;
 import com.bin.bustest.R;
 import com.bin.bustest.base.BaseAty;
 import com.bin.bustest.bean.SearchBean;
@@ -93,7 +94,7 @@ public class SearchAty extends BaseAty {
                         ll_his.setVisibility(View.GONE);
                         ll_result.setVisibility(View.VISIBLE);
                         mSuggestionSearch.requestSuggestion(new SuggestionSearchOption()
-                                .city("天津")
+                                .city(BaseApplication.getCity())
                                 .citylimit(true)
                                 .keyword(s.toString()));
                     }
@@ -152,6 +153,22 @@ public class SearchAty extends BaseAty {
         hisRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         hisAdapter.setEmptyView(view);
         hisRv.setAdapter(hisAdapter);
+        hisAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                if (("my").equals(type)) {
+                    Intent intent = new Intent();
+                    intent.putExtra("my", HisUtil.getSearchHistory(SearchAty.this).get(position));
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } else if (("go".equals(type))) {
+                    Intent intent = new Intent();
+                    intent.putExtra("go", HisUtil.getSearchHistory(SearchAty.this).get(position));
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+            }
+        });
     }
 
     private void initResultAdapter() {
@@ -177,10 +194,6 @@ public class SearchAty extends BaseAty {
             }
         });
 
-    }
-
-    public void finish(View view) {
-        finish();
     }
 
     public void click(View view) {

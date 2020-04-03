@@ -19,6 +19,7 @@
             android:textSize="18sp" />
 
         <ImageView
+            android:id="@+id/iv_search"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_alignParentRight="true"

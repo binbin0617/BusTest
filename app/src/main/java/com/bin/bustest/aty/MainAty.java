@@ -150,12 +150,18 @@ public class MainAty extends BaseAty {
             //获取经度信息
             double longitude = location.getLongitude();
 
+            float radius = location.getRadius();
+
+            float direction = location.getDirection();
+
             int errorCode = location.getLocType();
 
-            Log.e(TAG, "-->errorCode   " + errorCode + "    latitude" + latitude + "    longitude" + longitude);
+//            Log.e(TAG, "-->errorCode   " + errorCode + "    latitude" + latitude + "    longitude" + longitude);
             LocationBean locationBean = new LocationBean();
             locationBean.setLatitude(latitude);
             locationBean.setLongitude(longitude);
+            locationBean.setRadius(radius);
+            locationBean.setDirection(direction);
 
 
             EventBus.getDefault().post(locationBean);

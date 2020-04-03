@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.bin.bustest.R;
 import com.bin.bustest.aty.SearchAty;
+import com.bin.bustest.aty.SearchPointAty;
 import com.bin.bustest.base.BaseFgt;
 
 import static android.app.Activity.RESULT_OK;
@@ -22,6 +24,12 @@ public class Secondfgt extends BaseFgt {
 
     private TextView tv_go;
 
+    private ImageView iv_search;
+
+    private String startName;
+
+    private String endName;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,6 +37,7 @@ public class Secondfgt extends BaseFgt {
         View view = inflater.inflate(R.layout.fgt_second, container, false);
         tv_my = view.findViewById(R.id.tv_my);
         tv_go = view.findViewById(R.id.tv_go);
+        iv_search = view.findViewById(R.id.iv_search);
         click();
         return view;
     }
@@ -49,6 +58,26 @@ public class Secondfgt extends BaseFgt {
                 Intent intent = new Intent(getContext(), SearchAty.class);
                 intent.putExtra("type", "go");
                 startActivityForResult(intent, 222);
+            }
+        });
+
+        iv_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startName = tv_my.getText().toString().trim();
+                endName = tv_go.getText().toString().trim();
+                if (startName.equals("我的位置")) {
+                    showToast("请输入你的起点", 1);
+                    return;
+                }
+                if (endName.equals("你要去哪儿？")) {
+                    showToast("请输入你的目的地", 1);
+                    return;
+                }
+                Intent intent = new Intent(getContext(), SearchPointAty.class);
+                intent.putExtra("startName", startName);
+                intent.putExtra("endName", endName);
+                startActivity(intent);
             }
         });
     }
