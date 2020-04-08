@@ -243,6 +243,7 @@ public class FirstFgt extends BaseFgt implements OnGetBusLineSearchResultListene
                 Intent intent = new Intent(getContext(), BusDetailsAty.class);
                 intent.putExtra("name", mList.get(position).getName());
                 intent.putExtra("busid", mList.get(position).getBusId());
+//                intent.putExtra("busid", mList.get(position).getBusId());
                 startActivity(intent);
             }
         });

@@ -52,9 +52,9 @@ public class SecondsTest {
 //        }
 
         if (0 < hours) {
-            return hours + "小时" + minutes + "分" + second + "秒";
+            return hours + "小时" + minutes + "分";
         } else {
-            return minutes + "分" + second + "秒";
+            return minutes + "分" ;
         }
     }
 }

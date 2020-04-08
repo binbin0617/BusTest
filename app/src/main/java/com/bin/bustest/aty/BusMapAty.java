@@ -137,7 +137,7 @@ public class BusMapAty extends BaseAty implements OnGetPoiSearchResultListener, 
         if (busLineResult == null || busLineResult.error != SearchResult.ERRORNO.NO_ERROR) {
             return;
         }
-        MapStatusUpdate update = null;
+//        MapStatusUpdate update = null;
 //        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 //        Log.e("lyl", "update:" + latLng);
 //
