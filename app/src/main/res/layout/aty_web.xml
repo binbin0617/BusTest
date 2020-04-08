@@ -24,15 +24,17 @@
             android:layout_centerInParent="true"
             android:text="当前位置地图"
             android:textColor="#333333"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:visibility="gone" />
 
 
     </RelativeLayout>
 
-    <com.baidu.mapapi.map.MapView
-        android:id="@+id/bmapView"
+    <RelativeLayout
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true" />
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
 
 </LinearLayout>

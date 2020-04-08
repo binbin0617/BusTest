@@ -5,12 +5,30 @@
     android:orientation="vertical">
 
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_time"
+        android:layout_marginLeft="18dp"
+        android:textSize="17sp"
+        android:textColor="#333333"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="18dp"
+        android:textSize="15sp"
+        android:text="路线详情："
+        android:textColor="#333333"
+        />
+
+    <TextView
         android:id="@+id/tv_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="18dp"
         android:layout_marginRight="18dp"
-        android:textColor="#333333"
+        android:textColor="#666666"
         android:textSize="14sp" />
 
     <TextView

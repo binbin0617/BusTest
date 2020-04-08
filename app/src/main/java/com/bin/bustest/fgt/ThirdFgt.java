@@ -4,35 +4,30 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
+import com.bin.bustest.adapter.ViewPagerAdapter;
 import com.bin.bustest.base.BaseFgt;
-import com.bin.bustest.bean.HomeBean;
 import com.bin.bustest.R;
-import com.bin.bustest.adapter.ImageAdapter;
-import com.bumptech.glide.Glide;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.youth.banner.Banner;
-import com.youth.banner.indicator.CircleIndicator;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
 
 public class ThirdFgt extends BaseFgt {
 
-    private Banner banner;
 
-    private RecyclerView rv;
 
-    private List<Integer> mList;
+    private ViewPager viewPager;
+    private TabLayout tabLayout1;
 
-    private List<HomeBean> imgList;
 
-    private HomeAdapter homeAdapter;
+    private ViewPagerAdapter carTypeViewAdapter;
+    private ArrayList<String> carStringList =new ArrayList<>();
+    private ArrayList<Fragment> carTypeFragmentList = new ArrayList<Fragment>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,76 +38,28 @@ public class ThirdFgt extends BaseFgt {
     }
 
     public void initView(View view) {
-        /**
-         * 列表的上面布局
-         */
-        View view1 = View.inflate(getContext(), R.layout.rv_head, null);
-        banner = view1.findViewById(R.id.banner);
-        mList = new ArrayList<>();
-        mList.add(R.mipmap.index1);
-        mList.add(R.mipmap.index2);
-        mList.add(R.mipmap.index3);
-        mList.add(R.mipmap.index4);
-        banner.setAdapter(new ImageAdapter(mList))
-                .setOrientation(Banner.HORIZONTAL)
-                .setIndicator(new CircleIndicator(getContext()))
-                .setUserInputEnabled(true);
-        /**
-         * 列表的下面布局
-         */
-        View view2 = View.inflate(getContext(), R.layout.rv_foot, null);
+        carStringList.add("头条");
+        carStringList.add("社会");
+        carStringList.add("国内");
+        carStringList.add("娱乐");
+        carStringList.add("国际");
+        NewsFgt carTypeFragment1=NewsFgt.newInstance("toutiao");
+        NewsFgt carTypeFragment2=NewsFgt.newInstance("shehui");
+        NewsFgt carTypeFragment3=NewsFgt.newInstance("guonei");
+        NewsFgt carTypeFragment4=NewsFgt.newInstance("yule");
+        NewsFgt carTypeFragment5=NewsFgt.newInstance("guoji");
+        carTypeFragmentList.add(carTypeFragment1);
+        carTypeFragmentList.add(carTypeFragment2);
+        carTypeFragmentList.add(carTypeFragment3);
+        carTypeFragmentList.add(carTypeFragment4);
+        carTypeFragmentList.add(carTypeFragment5);
 
+        carTypeViewAdapter=new ViewPagerAdapter(getChildFragmentManager(), carStringList,carTypeFragmentList,BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
-        rv = view.findViewById(R.id.rv);
-        imgList = new ArrayList<>();
-        HomeBean homeBean1 = new HomeBean();
-        homeBean1.setImgId(R.mipmap.index1);
-        imgList.add(homeBean1);
-        HomeBean homeBean2 = new HomeBean();
-        homeBean2.setImgId(R.mipmap.index2);
-        imgList.add(homeBean2);
-        HomeBean homeBean3 = new HomeBean();
-        homeBean3.setImgId(R.mipmap.index3);
-        imgList.add(homeBean3);
-        HomeBean homeBean4 = new HomeBean();
-        homeBean4.setImgId(R.mipmap.index4);
-        imgList.add(homeBean4);
-        homeAdapter = new HomeAdapter(R.layout.item_img, imgList);
-        rv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        homeAdapter.addHeaderView(view1);
-        homeAdapter.addFooterView(view2);
-        rv.setAdapter(homeAdapter);
+        viewPager= view.findViewById(R.id.vp_cartype);
+        viewPager.setAdapter(carTypeViewAdapter);
+        tabLayout1=view.findViewById(R.id.huoyun_tablayout);
+        tabLayout1.setupWithViewPager(viewPager);
 
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        //开始轮播
-        banner.start();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        //结束轮播
-        banner.stop();
-    }
-
-
-    public class HomeAdapter extends BaseQuickAdapter<HomeBean, BaseViewHolder> {
-        public HomeAdapter(int layoutResId, List data) {
-            super(layoutResId, data);
-        }
-
-        @Override
-        protected void convert(BaseViewHolder helper, HomeBean item) {
-//            helper.setText(R.id.text, item.getTitle());
-//            helper.setImageResource(R.id.icon, item.getImageResource());
-            // 加载网络图片
-            Glide.with(getContext()).load(item.getImgId()).into((ImageView) helper.getView(R.id.iv));
-        }
-    }
-
-
 }

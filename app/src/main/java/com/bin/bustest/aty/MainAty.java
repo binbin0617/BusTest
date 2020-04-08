@@ -17,6 +17,7 @@ import com.baidu.location.LocationClientOption;
 import com.bin.bustest.R;
 import com.bin.bustest.base.BaseAty;
 import com.bin.bustest.bean.LocationBean;
+import com.bin.bustest.fgt.FourthFgt;
 import com.bin.bustest.fgt.ThirdFgt;
 import com.bin.bustest.fgt.FirstFgt;
 import com.bin.bustest.fgt.Secondfgt;
@@ -30,7 +31,7 @@ import java.util.List;
 public class MainAty extends BaseAty {
 
     private String TAG = MainAty.class.getSimpleName();
-    private String[] tabText = {"首页", "发现", "消息", "我的"};
+    private String[] tabText = {"首页", "发现", "热点", "我的"};
     //未选中icon
     private int[] normalIcon = {R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher};
     //选中时icon
@@ -71,7 +72,7 @@ public class MainAty extends BaseAty {
         fragments.add(new FirstFgt());
         fragments.add(new Secondfgt());
         fragments.add(new ThirdFgt());
-        fragments.add(new FirstFgt());
+        fragments.add(new FourthFgt());
 
         navigationBar.titleItems(tabText)
                 .normalIconItems(normalIcon)

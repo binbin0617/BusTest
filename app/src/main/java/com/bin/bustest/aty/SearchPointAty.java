@@ -1,18 +1,17 @@
 package com.bin.bustest.aty;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.route.BikingRouteResult;
-import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
 import com.baidu.mapapi.search.route.DrivingRouteResult;
 import com.baidu.mapapi.search.route.IndoorRouteResult;
 import com.baidu.mapapi.search.route.MassTransitRouteResult;
@@ -25,7 +24,10 @@ import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.bin.bustest.BaseApplication;
 import com.bin.bustest.R;
 import com.bin.bustest.base.BaseAty;
+import com.bin.bustest.bean.BusLuxianBean;
+import com.bin.bustest.util.SecondsTest;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 
 import java.util.ArrayList;
@@ -39,7 +41,9 @@ public class SearchPointAty extends BaseAty implements OnGetRoutePlanResultListe
 
     private SearchPointAdapter adapter;
 
-    private List<String> mList;
+    private List<BusLuxianBean> mList;
+
+    private TransitRouteResult mTransitRouteResult;
 
     private RoutePlanSearch mRoutePlanSearch;
 
@@ -93,6 +97,15 @@ public class SearchPointAty extends BaseAty implements OnGetRoutePlanResultListe
         adapter = new SearchPointAdapter(R.layout.item_search_point, mList);
         rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rv.setAdapter(adapter);
+        adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                Intent intent = new Intent(SearchPointAty.this, MapSearchAty.class);
+                intent.putExtra("list", mTransitRouteResult);
+                intent.putExtra("position", position);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -111,6 +124,7 @@ public class SearchPointAty extends BaseAty implements OnGetRoutePlanResultListe
             // drivingRouteResult.getSuggestAddrInfo()
             return;
         }
+        mTransitRouteResult = transitRouteResult;
         Log.e(TAG, transitRouteResult.getRouteLines().size() + "-->");
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < transitRouteResult.getRouteLines().size(); i++) {
@@ -118,19 +132,14 @@ public class SearchPointAty extends BaseAty implements OnGetRoutePlanResultListe
 //                Log.e(TAG, transitRouteResult.getRouteLines().get(i).getAllStep().get(j).getInstructions() + "-->getTaxitInfo");
                 sb.append(transitRouteResult.getRouteLines().get(i).getAllStep().get(j).getInstructions() + "-->");
             }
-            mList.add(sb.toString());
+            BusLuxianBean busLuxianBean = new BusLuxianBean();
+            busLuxianBean.setXina(sb.toString());
+            String time = SecondsTest.secondToTime(transitRouteResult.getRouteLines().get(i).getDuration());
+            busLuxianBean.setTime(time);
+            mList.add(busLuxianBean);
             sb.delete(0, sb.length());
         }
         initAdapter();
-        //创建TransitRouteOverlay实例
-//        TransitRouteOverlay overlay = new TransitRouteOverlay(mBaiduMap);
-//        //获取路径规划数据,(以返回的第一条数据为例)
-//        //为TransitRouteOverlay实例设置路径数据
-//        if (transitRouteResult.getRouteLines().size() > 0) {
-//            overlay.setData(transitRouteResult.getRouteLines().get(0));
-//            //在地图上绘制TransitRouteOverlay
-//            overlay.addToMap();
-//        }
     }
 
     @Override
@@ -153,14 +162,15 @@ public class SearchPointAty extends BaseAty implements OnGetRoutePlanResultListe
 
     }
 
-    public class SearchPointAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
+    public class SearchPointAdapter extends BaseQuickAdapter<BusLuxianBean, BaseViewHolder> {
         public SearchPointAdapter(int layoutResId, List data) {
             super(layoutResId, data);
         }
 
         @Override
-        protected void convert(BaseViewHolder helper, String item) {
-            helper.setText(R.id.tv_info, item);
+        protected void convert(BaseViewHolder helper, BusLuxianBean item) {
+            helper.setText(R.id.tv_info, item.getXina());
+            helper.setText(R.id.tv_time, "当前路线耗时"+item.getTime());
 //            helper.setImageResource(R.id.icon, item.getImageResource());
             // 加载网络图片
 //            Glide.with(getContext()).load(item.getImgId()).into((ImageView) helper.getView(R.id.iv));

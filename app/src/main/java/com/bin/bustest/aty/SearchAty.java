@@ -109,16 +109,17 @@ public class SearchAty extends BaseAty {
         @Override
         public void onGetSuggestionResult(SuggestionResult suggestionResult) {
             //处理sug检索结果
+            if (resultList.size() != 0) {
+                resultList.clear();
+            }
             if (suggestionResult.getAllSuggestions() == null) {
-                if (resultList.size() != 0) {
-                    resultList.clear();
-                }
                 if (resultAdapter != null) {
                     resultAdapter.notifyDataSetChanged();
                 }
 //                Toast.makeText(SearchAty.this, "抱歉，未找到结果", Toast.LENGTH_LONG).show();
                 return;
             }
+
             for (SuggestionResult.SuggestionInfo s : suggestionResult.getAllSuggestions()) {
                 SearchBean searchBean = new SearchBean();
                 searchBean.setKey(s.getKey());

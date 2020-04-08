@@ -105,10 +105,16 @@ public class BusMapAty extends BaseAty implements OnGetPoiSearchResultListener, 
                 break;
             }
         }
+        if (busLineId == null || BaseApplication.getCity() == null) {
+            mBusLineSearch.searchBusLine(new BusLineSearchOption()
+                    .city("天津")
+                    .uid("7cee04b90c0014f8b6147ff2"));
+        } else {
+            mBusLineSearch.searchBusLine(new BusLineSearchOption()
+                    .city(BaseApplication.getCity())
+                    .uid(busLineId));
+        }
 
-        mBusLineSearch.searchBusLine(new BusLineSearchOption()
-                .city(BaseApplication.getCity())
-                .uid(busLineId));
     }
 
     @Override
