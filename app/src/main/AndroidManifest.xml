@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.bin.bustest">
 
+    <!-- 访问网络，网络定位需要上网-->
+    <uses-permission android:name="android.permission.INTERNET" />
     <!-- 这个权限用于进行网络定位-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!-- 这个权限用于访问GPS定位-->
@@ -15,17 +17,12 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <!-- 写入扩展存储，向扩展卡写入数据，用于写入离线定位数据-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <!--    10.0-->
-
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-
     <!--    9.0-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-
-    <!-- 访问网络，网络定位需要上网-->
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
 
     <application
@@ -38,30 +35,28 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity
-            android:name=".aty.MainAty"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".aty.SearchAty"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".aty.BusDetailsAty"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+                <activity
+                    android:name=".aty.StartPageAty"
+                    android:theme="@style/SplashActivityTheme">
+                    <intent-filter>
+                        <action android:name="android.intent.action.MAIN" />
+                        <category android:name="android.intent.category.LAUNCHER" />
+                    </intent-filter>
+                </activity>
+
+        <activity android:name=".aty.SearchAty" />
+        <activity android:name=".aty.BusDetailsAty" />
         <activity android:name=".aty.MapAty" />
-        <activity
-            android:name=".aty.BusMapAty"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".aty.MapSearchAty"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity android:name=".aty.SearchPointAty"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity android:name=".aty.BusMapAty" />
+        <activity android:name=".aty.MapSearchAty" />
+        <activity android:name=".aty.SearchPointAty" />
         <activity android:name=".aty.WebAty" />
+        <activity android:name=".aty.MainAty" />
+        <activity android:name=".aty.RegisterAty" />
+        <activity android:name=".aty.LoginAty" />
+        <activity android:name=".aty.FeedBackAty" />
+        <activity android:name=".aty.SettingAty" />
 
         <!-- 开发者申请的key -->
         <meta-data

@@ -78,11 +78,6 @@ public class NewsFgt extends BaseFgt {
         return view;
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-    }
-
     public void initHttp() {
         showLoadingDialog();
         HttpRequest.GET(getActivity(), "http://v.juhe.cn/toutiao/index",

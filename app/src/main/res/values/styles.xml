@@ -13,4 +13,10 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
+    <!-- Base application theme. -->
+    <style name="SplashActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@mipmap/ic_launcher</item>
+    </style>
+
 </resources>

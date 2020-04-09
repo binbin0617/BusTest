@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,6 +89,12 @@ public class FirstFgt extends BaseFgt implements OnGetBusLineSearchResultListene
 
     private TextView tv_title;
 
+    private TextView tv_zhandian;
+
+    private TextView tv_code;
+
+    private RelativeLayout rl_code;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -101,6 +108,9 @@ public class FirstFgt extends BaseFgt implements OnGetBusLineSearchResultListene
         tv_fengli = view.findViewById(R.id.tv_fengli);
         tv_fengxiang = view.findViewById(R.id.tv_fengxiang);
         tv_title = view.findViewById(R.id.tv_title);
+        tv_zhandian = view.findViewById(R.id.tv_zhandian);
+        tv_code = view.findViewById(R.id.tv_code);
+        rl_code = view.findViewById(R.id.rl_code);
         EventBus.getDefault().register(this);
         mList = new ArrayList<>();
         banner = view.findViewById(R.id.banner);
@@ -135,7 +145,7 @@ public class FirstFgt extends BaseFgt implements OnGetBusLineSearchResultListene
                                 mList.clear();
                             }
                             DaysBean daysBean = new Gson().fromJson(main, DaysBean.class);
-                            if(daysBean.getResult()==null){
+                            if (daysBean.getResult() == null) {
                                 return;
                             }
                             if (daysBean.getResult().getRealtime() == null) {
@@ -171,6 +181,27 @@ public class FirstFgt extends BaseFgt implements OnGetBusLineSearchResultListene
                 startActivity(intent);
             }
         });
+
+        tv_zhandian.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tv_zhandian.setTextSize(16);
+                rv.setVisibility(View.VISIBLE);
+                tv_code.setTextSize(12);
+                rl_code.setVisibility(View.GONE);
+            }
+        });
+
+        tv_code.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tv_zhandian.setTextSize(12);
+                rv.setVisibility(View.GONE);
+                tv_code.setTextSize(16);
+                rl_code.setVisibility(View.VISIBLE);
+            }
+        });
+
 
         mPoiSearch = PoiSearch.newInstance();
 
