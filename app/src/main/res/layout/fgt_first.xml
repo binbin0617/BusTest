@@ -126,7 +126,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:padding="10dp"
-                android:text="附近站点"
+                android:text="当前位置"
                 android:textColor="#333333"
                 android:textSize="12sp" />
 
