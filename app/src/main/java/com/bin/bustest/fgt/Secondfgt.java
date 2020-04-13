@@ -3,6 +3,7 @@ package com.bin.bustest.fgt;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +15,22 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bin.bustest.BaseApplication;
 import com.bin.bustest.R;
+import com.bin.bustest.aty.BusAty;
 import com.bin.bustest.aty.SearchAty;
 import com.bin.bustest.aty.SearchPointAty;
 import com.bin.bustest.base.BaseFgt;
+import com.bin.bustest.bean.CityBean;
+import com.bin.bustest.bean.DaysBean;
 import com.bin.bustest.util.HisUtil2;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.google.gson.Gson;
+import com.kongzue.baseokhttp.HttpRequest;
+import com.kongzue.baseokhttp.listener.ResponseListener;
+import com.kongzue.baseokhttp.util.Parameter;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import java.util.List;
@@ -39,6 +48,8 @@ public class Secondfgt extends BaseFgt {
 
     private ImageView iv_delete;
 
+    private ImageView iv_bus;
+
     private String startName;
 
     private String endName;
@@ -47,6 +58,7 @@ public class Secondfgt extends BaseFgt {
 
     private ResultAdapter2 adapter;
 
+    private String cityid;
 
 
     @Override
@@ -58,6 +70,7 @@ public class Secondfgt extends BaseFgt {
         iv_search = view.findViewById(R.id.iv_search);
         iv_delete = view.findViewById(R.id.iv_delete);
         rv = view.findViewById(R.id.rv);
+        iv_bus = view.findViewById(R.id.iv_bus);
         click();
         initAdapter();
         return view;
@@ -113,8 +126,15 @@ public class Secondfgt extends BaseFgt {
 //                if (adapter != null) {
 //                    adapter.notifyDataSetChanged();
 //                } else {
-                    initAdapter();
+                initAdapter();
 //                }
+            }
+        });
+
+        iv_bus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initHttp();
             }
         });
 
@@ -140,6 +160,35 @@ public class Secondfgt extends BaseFgt {
         });
     }
 
+    private void initHttp() {
+        showLoadingDialog();
+        HttpRequest.GET(getActivity(), "http://api.dwmm136.cn/z_busapi/BusApi.php",
+                new Parameter().add("optype", "city")
+                        .add("uname", BaseApplication.getuName()), new ResponseListener() {
+                    @Override
+                    public void onResponse(String main, Exception error) {
+                        if (error == null) {
+                            CityBean cityBean = new Gson().fromJson(main, CityBean.class);
+                            if (("0").equals(cityBean.getError_code()) && ("ok").equals(cityBean.getReturn_code())) {
+                                for (int i = 0; i < cityBean.getReturl_list().size(); i++) {
+                                    CityBean.ReturlListBean returlListBean = cityBean.getReturl_list().get(i);
+                                    if (returlListBean.getCity().contains(BaseApplication.getCity())) {
+                                        cityid = returlListBean.getCityid();
+                                        Log.e("-->", "cityid" + cityid);
+                                        dismissLoadingDialog();
+                                        Intent intent = new Intent(getContext(), BusAty.class);
+                                        intent.putExtra("cityid", cityid);
+                                        startActivity(intent);
+                                    }
+                                }
+                            } else {
+                                showToast("请求失败", 1);
+                            }
+                        }
+                    }
+                });
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -162,7 +211,7 @@ public class Secondfgt extends BaseFgt {
 //        if (adapter != null) {
 //            adapter.notifyDataSetChanged();
 //        } else {
-            initAdapter();
+        initAdapter();
 //        }
     }
 

@@ -16,7 +16,7 @@
     <!-- Base application theme. -->
     <style name="SplashActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="android:windowBackground">@mipmap/ic_launcher</item>
+        <item name="android:windowBackground">@mipmap/icon_sp</item>
     </style>
 
 </resources>

@@ -133,8 +133,13 @@ public class SearchPointAty extends BaseAty implements OnGetRoutePlanResultListe
         StringBuffer sb2 = new StringBuffer();
         StringBuffer sb3 = new StringBuffer();
         for (int i = 0; i < transitRouteResult.getRouteLines().size(); i++) {
+            boolean isDiTie = false;
             int juli = 0;
             for (int j = 0; j < transitRouteResult.getRouteLines().get(i).getAllStep().size(); j++) {
+                if (transitRouteResult.getRouteLines().get(i).getAllStep().get(j).getStepType() == TransitRouteLine.TransitStep.TransitRouteStepType.SUBWAY) {
+                    isDiTie = true;
+                    break;
+                }
                 sb3.append(transitRouteResult.getRouteLines().get(i).getAllStep().get(j).getInstructions() + "-->\n");
 //                Log.e(TAG, transitRouteResult.getRouteLines().get(i).getAllStep().get(j).getInstructions() + "-->getTaxitInfo");
                 if (transitRouteResult.getRouteLines().get(i).getAllStep().get(j).getVehicleInfo() != null) {
@@ -176,21 +181,23 @@ public class SearchPointAty extends BaseAty implements OnGetRoutePlanResultListe
 //                Log.e(TAG, "getStepType-->"+transitRouteResult.getRouteLines().get(i).getAllStep().get(j).getStepType().toString());
 //                Log.e(TAG,transitRouteResult.getRouteLines().get(i).getAllStep().get(j).getVehicleInfo().getTitle());
             }
-            Log.e(TAG, "第" + i + "种路线步行总距离" + juli + "-->  juli");
-            BusLuxianBean busLuxianBean = new BusLuxianBean();
-            String s = "   -->   ";
-            busLuxianBean.setXina(sb.toString().substring(0, sb.length() - s.length()));
-            String time = SecondsTest.secondToTime(transitRouteResult.getRouteLines().get(i).getDuration());
-            busLuxianBean.setTime(time);
-            busLuxianBean.setBuxing(String.valueOf(juli));
-            busLuxianBean.setXiangxi(sb3.toString());
-            if (sb2.toString().contains("-")) {
-                String[] temp = sb2.toString().split("-");
-                if (temp.length >= 1) {
-                    busLuxianBean.setJinzhan(temp[0]);
+            if (!isDiTie) {
+                Log.e(TAG, "第" + i + "种路线步行总距离" + juli + "-->  juli");
+                BusLuxianBean busLuxianBean = new BusLuxianBean();
+                String s = "   -->   ";
+                busLuxianBean.setXina(sb.toString().substring(0, sb.length() - s.length()));
+                String time = SecondsTest.secondToTime(transitRouteResult.getRouteLines().get(i).getDuration());
+                busLuxianBean.setTime(time);
+                busLuxianBean.setBuxing(String.valueOf(juli));
+                busLuxianBean.setXiangxi(sb3.toString());
+                if (sb2.toString().contains("-")) {
+                    String[] temp = sb2.toString().split("-");
+                    if (temp.length >= 1) {
+                        busLuxianBean.setJinzhan(temp[0]);
+                    }
                 }
+                mList.add(busLuxianBean);
             }
-            mList.add(busLuxianBean);
             sb.delete(0, sb.length());
             sb2.delete(0, sb2.length());
             sb3.delete(0, sb3.length());
@@ -234,6 +241,25 @@ public class SearchPointAty extends BaseAty implements OnGetRoutePlanResultListe
             } else {
                 ((TextView) helper.getView(R.id.tv_jinzhan)).setVisibility(View.GONE);
             }
+            ((TextView) helper.getView(R.id.tv_info)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (item.getXina().contains("-->")) {
+                        Intent intent = new Intent(getContext(), BusAty2.class);
+                        intent.putExtra("bus", item.getXina());
+//                        intent.putExtra("cityid", BaseApplication.getCityid());
+                        startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(getContext(), BusAty.class);
+                        intent.putExtra("bus", item.getXina());
+//                        intent.putExtra("cityid", BaseApplication.getCityid());
+                        startActivity(intent);
+                    }
+
+                }
+            });
+
             ((ImageView) helper.getView(R.id.iv_zhankai)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

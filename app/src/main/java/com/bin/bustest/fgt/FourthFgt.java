@@ -4,14 +4,19 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.bin.bustest.BaseApplication;
 import com.bin.bustest.R;
@@ -19,6 +24,12 @@ import com.bin.bustest.aty.FeedBackAty;
 import com.bin.bustest.aty.LoginAty;
 import com.bin.bustest.aty.SettingAty;
 import com.bin.bustest.base.BaseFgt;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
+
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class FourthFgt extends BaseFgt {
@@ -39,6 +50,10 @@ public class FourthFgt extends BaseFgt {
 
     private TextView tv_name;
 
+    private ImageView iv_head;
+
+    private int REQUEST_CODE_CHOOSE = 0;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,6 +67,7 @@ public class FourthFgt extends BaseFgt {
         tv_guanyu = view.findViewById(R.id.tv_guanyu);
         ll_shezhi = view.findViewById(R.id.ll_shezhi);
         tv_name = view.findViewById(R.id.tv_name);
+        iv_head = view.findViewById(R.id.iv_head);
         String name = BaseApplication.getPreferences().getString("name", "");
         if (!TextUtils.isEmpty(name)) {
             tv_name.setText(name);
@@ -61,6 +77,15 @@ public class FourthFgt extends BaseFgt {
     }
 
     private void initClick() {
+        iv_head.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentToPickPic = new Intent(Intent.ACTION_PICK, null);
+                // 如果限制上传到服务器的图片类型时可以直接写如："image/jpeg 、 image/png等的类型" 所有类型则写 "image/*"
+                intentToPickPic.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/jpeg");
+                startActivityForResult(intentToPickPic, REQUEST_CODE_CHOOSE);
+            }
+        });
         tv_xinxi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,5 +140,23 @@ public class FourthFgt extends BaseFgt {
                 getActivity().finish();
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            // 获取图片
+            try {
+                //该uri是上一个Activity返回的
+                Uri imageUri = data.getData();
+                if(imageUri!=null) {
+                    Glide.with(getActivity()).load(imageUri).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(iv_head);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 }

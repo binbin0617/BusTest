@@ -1,6 +1,5 @@
 package com.bin.bustest.aty;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -8,7 +7,6 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
@@ -33,9 +31,9 @@ public class MainAty extends BaseAty {
     private String TAG = MainAty.class.getSimpleName();
     private String[] tabText = {"首页", "发现", "热点", "我的"};
     //未选中icon
-    private int[] normalIcon = {R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher};
+    private int[] normalIcon = {R.mipmap.icon_shou, R.mipmap.icon_lu, R.mipmap.icon_re, R.mipmap.icon_my};
     //选中时icon
-    private int[] selectIcon = {R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher};
+    private int[] selectIcon = {R.mipmap.icon_shou_back, R.mipmap.icon_lu_back, R.mipmap.icon_re_back, R.mipmap.icon_my_black};
 
     private List<Fragment> fragments = new ArrayList<>();
 
@@ -53,14 +51,18 @@ public class MainAty extends BaseAty {
         //声明LocationClient类
         mLocationClient.registerLocationListener(myListener);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
         ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{
                         Manifest.permission.ACCESS_COARSE_LOCATION,
                         Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.CALL_PHONE
+                        Manifest.permission.CALL_PHONE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 }, 00000000);
             }
         }
@@ -169,28 +171,6 @@ public class MainAty extends BaseAty {
 
             EventBus.getDefault().post(locationBean);
 
-//            initView(latitude, longitude);
-//            //获取定位精度，默认值为0.0f
-//            float radius = location.getRadius();
-//            //获取经纬度坐标类型，以LocationClientOption中设置过的坐标类型为准
-//            String coorType = location.getCoorType();
-//            //获取定位类型、定位错误返回码，具体信息可参照类参考中BDLocation类中的说明
-//            int errorCode = location.getLocType();
-//            Log.e(TAG, "-->" + latitude + longitude + radius + coorType + errorCode);
-//            Log.e(TAG, "-->111");
-//
-////            PoiNearbySearchOption
-//            Poi poi = location.getPoiList().get(0);
-//            String poiName = poi.getName();    //获取POI名称
-//            String poiTags = poi.getTags();    //获取POI类型
-//            String poiAddr = poi.getAddr();    //获取POI地址 //获取周边POI信息
-//            Log.e(TAG, "-->" + poiName + poiTags + poiAddr);
-//
-//            PoiRegion poiRegion = location.getPoiRegion();
-//            String poiDerectionDesc = poiRegion.getDerectionDesc();    //获取PoiRegion位置关系
-//            String poiRegionName = poiRegion.getName();    //获取PoiRegion名称
-//            String poiTags1 = poiRegion.getTags();    //获取PoiRegion类型
-//            Log.e(TAG, "-->" + poiDerectionDesc + poiRegionName + poiTags1);
         }
     }
 
